@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../blocs/stories_provider.dart';
 import '../widgets/news_list_title.dart';
+import '../widgets/refresh.dart';
 
 class NewsList extends StatelessWidget {
   Widget build(context) {
@@ -25,18 +26,22 @@ class NewsList extends StatelessWidget {
       builder: (context, AsyncSnapshot<List<int>> snapshot) {
         // Anotating type of AsyncSnapshot is important and will save time in the future
         if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
+          return Center(
+            child: CircularProgressIndicator(),
+          );
         }
 
-        return ListView.builder(
-          itemCount: snapshot.data.length,
-          itemBuilder: (context, int index) {
-            bloc.fetchItem(snapshot.data[index]);
+        return Refresh(
+          child: ListView.builder(
+            itemCount: snapshot.data.length,
+            itemBuilder: (context, int index) {
+              bloc.fetchItem(snapshot.data[index]);
 
-            return NewsListTitle(
-              itemId: snapshot.data[index],
-            );
-          },
+              return NewsListTitle(
+                itemId: snapshot.data[index],
+              );
+            },
+          ),
         );
       },
     );
