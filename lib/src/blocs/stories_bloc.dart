@@ -7,20 +7,21 @@ class StoriesBloc {
   final _repository = Repository(); // Will be getting data from Repository
   final _topIds = PublishSubject<
       List<int>>(); // Like a StreamController, and will be accepting data
-  final _items = BehaviorSubject<int>();
-
-  Observable<Map<int, Future<ItemModel>>> items;
+  final _itemsOutput = BehaviorSubject<Map<int, Future<ItemModel>>>();
+  final _itemsFetcher = PublishSubject<int>();
 
   // Getters to Streams/Observable, this will be available to the outside world
   Observable<List<int>> get topIds => _topIds.stream;
+  Observable<Map<int, Future<ItemModel>>> get items => _itemsOutput.stream;
+
   // DON'T DO THIS, this creates a new transformer each time - do in constructor
-  // get items => _items.stream.transform(_itemsTransformer());
+  // get items => _itemsOutput.stream.transform(_itemsTransformer());
 
   // Getters to Sinks
-  Function(int) get fetchItem => _items.sink.add;
+  Function(int) get fetchItem => _itemsFetcher.sink.add;
 
   StoriesBloc() {
-    items = _items.stream.transform(_itemsTransformer());
+    _itemsFetcher.stream.transform(_itemsTransformer()).pipe(_itemsOutput);
   }
 
   fetchTopIds() async {
@@ -43,6 +44,7 @@ class StoriesBloc {
   // If every called, close all of the different stream controllers that we have
   dispose() {
     _topIds.close();
-    _items.close();
+    _itemsFetcher.close();
+    _itemsOutput.close();
   }
 }

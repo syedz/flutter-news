@@ -20,7 +20,7 @@ class Repository {
 
   Future<ItemModel> fetchItem(int id) async {
     ItemModel item;
-    Source source;
+    var source;
 
     // Look through sources until a match is found, and stop looking
     for (source in sources) {
@@ -32,7 +32,10 @@ class Repository {
 
     // Backup our item into our different caches
     for (var cache in caches) {
-      cache.addItem(item);
+      // (source as Cache) or (cache as Source), instead just set source as var
+      if (cache != source) {
+        cache.addItem(item);
+      }
     }
 
     // Return item found
