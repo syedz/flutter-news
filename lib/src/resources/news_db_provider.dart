@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'dart:async';
 import '../models/item_model.dart';
-import './repository.dart';
+import 'repository.dart';
 
 class NewsDbProvider implements Source, Cache {
   Database db;
@@ -20,10 +20,12 @@ class NewsDbProvider implements Source, Cache {
 
   void init() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    final path = join(documentsDirectory.path, 'items2.db');
-    db = await openDatabase(path, version: 1,
-        onCreate: (Database newDb, int version) {
-      newDb.execute("""
+    final path = join(documentsDirectory.path, "items4.db");
+    db = await openDatabase(
+      path,
+      version: 1,
+      onCreate: (Database newDb, int version) {
+        newDb.execute("""
           CREATE TABLE Items
             (
               id INTEGER PRIMARY KEY,
@@ -41,7 +43,8 @@ class NewsDbProvider implements Source, Cache {
               descendants INTEGER
             )
         """);
-    });
+      },
+    );
   }
 
   Future<ItemModel> fetchItem(int id) async {
@@ -62,7 +65,7 @@ class NewsDbProvider implements Source, Cache {
   Future<int> addItem(ItemModel item) {
     // Don't need to await for the result
     return db.insert(
-      'Items',
+      "Items",
       item.toMapForDb(),
       conflictAlgorithm: ConflictAlgorithm.ignore,
     );
