@@ -4,10 +4,10 @@ import '../models/item_model.dart';
 import '../blocs/stories_provider.dart';
 import 'loading_container.dart';
 
-class NewsListTitle extends StatelessWidget {
+class NewsListTile extends StatelessWidget {
   final int itemId;
 
-  NewsListTitle({this.itemId});
+  NewsListTile({this.itemId});
 
   Widget build(context) {
     final bloc = StoriesProvider.of(context);
@@ -26,17 +26,20 @@ class NewsListTitle extends StatelessWidget {
               return LoadingContainer();
             }
 
-            return buildTile(itemSnapshot.data);
+            return buildTile(context, itemSnapshot.data);
           },
         );
       },
     );
   }
 
-  Widget buildTile(ItemModel item) {
+  Widget buildTile(BuildContext context, ItemModel item) {
     return Column(
       children: [
         ListTile(
+          onTap: () {
+            Navigator.pushNamed(context, '/${item.id}');
+          },
           title: Text(item.title),
           subtitle: Text('${item.score} points'),
           trailing: Column(
