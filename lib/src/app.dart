@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'screens/news_list.dart';
 import 'blocs/stories_provider.dart';
+import 'blocs/comments_provider.dart';
 import 'screens/news_detail.dart';
 
 class App extends StatelessWidget {
   Widget build(context) {
-    return StoriesProvider(
-      child: MaterialApp(
-        title: 'News!',
-        onGenerateRoute: routes,
+    return CommentsProvider(
+      child: StoriesProvider(
+        child: MaterialApp(
+          title: 'News!',
+          onGenerateRoute: routes,
+        ),
       ),
     );
   }
@@ -19,6 +22,9 @@ class App extends StatelessWidget {
     if (settings.name == '/') {
       return MaterialPageRoute(
         builder: (context) {
+          final storiesBloc = StoriesProvider.of(context);
+          storiesBloc.fetchTopIds();
+
           return NewsList();
         },
       );
@@ -26,7 +32,14 @@ class App extends StatelessWidget {
       return MaterialPageRoute(
         builder: (context) {
           // Extract the item id from settings.name and pass into NewsDetail. A great location to do some initialization or data fetching for NewsDetail
-          return NewsDetail();
+          final itemId = int.parse(settings.name.replaceFirst('/', ''));
+          final commentsBloc = CommentsProvider.of(context);
+
+          commentsBloc.fetchItemWithComments(itemId);
+
+          return NewsDetail(
+            itemId: itemId,
+          );
         },
       );
     }

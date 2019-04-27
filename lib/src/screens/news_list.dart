@@ -8,9 +8,6 @@ class NewsList extends StatelessWidget {
     // context gives reference of hierarchy, and we crawl up the hierarchy until we find an instance of the StoriesProvider, and that returns the reference to the bloc that is tied to the StoriesProvider. Now we'll be able to get access to the Stream that is tied to StoriesProvider and attempt to fetch some data.
     final bloc = StoriesProvider.of(context);
 
-    // Don't do this
-    bloc.fetchTopIds();
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Top News'),
