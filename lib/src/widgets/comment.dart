@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:html_unescape/html_unescape.dart';
 import '../models/item_model.dart';
 import 'loading_container.dart';
 
@@ -49,10 +50,8 @@ class Comment extends StatelessWidget {
   }
 
   Widget buildText(ItemModel item) {
-    final text = item.text
-        .replaceAll('&#x27', "'")
-        .replaceAll('<p>', '\n\n')
-        .replaceAll('</p>', '');
+    final unescape = new HtmlUnescape();
+    final text = unescape.convert(item.text);
 
     return Text(text);
   }
